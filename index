@@ -1,0 +1,197 @@
+<!doctype html>
+<html class="no-js no-svg html-attr" lang="fr-FR">
+<head>
+    <link rel="stylesheet" href="https://www.coover.fr/wp-content/themes/coover/build/style.css?ibjqe4q14q" type="text/css" media="screen" />  
+    <meta name='robots' content='index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1' />
+</head>
+
+	<body class="page-template-default page page-id-459 page-child parent-pageid-462 page-template-calculator " data-template="base.twig">
+		
+
+
+
+
+</div>
+				
+			
+<div class="overflow-hidden" id="app">
+    
+    <div class="container-marging row-reverse flex-wrap mxn2">
+        <div class="col col-12 lg-col-3 px2 sticky-panel self-start">
+            <div class="quote-panel column">
+    <div class="reglage-title">
+        <p class="my0">Réglages</p>
+    </div>
+    <div class="field-container">
+        
+        
+        <div class="row flex mb2 items-center">
+            <div class="col pr1 flex-auto">Activer la colonne "Quantité"</div>
+            <div class="col" style="width: 92px; min-width: 92px;"><cvr-switch left-label="Non" :left-value="false" right-label="Oui" :right-value="true" v-model="data.enableQuantityColumn"></cvr-switch></div>
+        </div>
+        <div v-if="data.enableQuantityColumn" class="row flex mb2 items-center">
+            <div class="col pr1 flex-auto">Activer la colonne "Unité"</div>
+            <div class="col" style="width: 92px; min-width: 92px;"><cvr-switch left-label="Non" :left-value="false" right-label="Oui" :right-value="true" v-model="data.enableUnitColumn"></cvr-switch></div>
+        </div>
+        <div class="row flex mb2 items-center">
+            <div class="col pr1 flex-auto">Couleur des cases</div>
+            <div class="col" style="width: 92px; min-width: 92px;">
+                <select v-model="data.color" :style="style">
+                    <option v-for="color in colors" :value="color">${color.name}</option>
+                </select>
+            </div>
+        </div>
+        <div class="row flex mb2 items-center">
+            <div class="col pr1 flex-auto">Devise</div>
+            <div class="col" style="width: 92px; min-width: 92px;">
+                <input type="text" v-model="data.currency" />
+            </div>
+        </div>
+    </div>
+    </div>            <button @click="download" class="cta button-download full-width mt2" :disabled="loading">Télécharger mon devis<i class="fas fa-download"></i></button>
+            <button @click="print" class="cta button-print full-width mt2" :disabled="loading">Imprimer mon devis<i class="fas fa-print"></i></button>
+        </div>
+        <div class="col col-12 lg-col-9 px2">
+            <div class="letter">
+                <div class="column quote-generator">
+    <field class="quote-number self-end h2" v-model="data.title"></field>
+
+    <div>
+        <el-upload class="avatar-uploader" drag
+ action="" :auto-upload="false" :show-file-list="false" :on-change="handleAvatarChange">
+            <img v-if="data.logo" :src="data.logo" class="quote-logo-img" />
+            <button v-if="data.logo" @click.stop="removeLogo" class="fas fa-minus-circle h3" style="position: absolute; right: -11px; top: -11px; z-index:1"></button>
+            <div class="el-upload-drag-element" style="width: 150px; height: 150px;" v-else>
+                <i class="el-icon-upload" style="margin-top: 22px; color: #cbcfd8"></i>
+                <div class="el-upload__text" style="font-size: 13px; color: #999ca0">Déposez ou cliquez si vous souhaitez ajouter votre logo</div>
+            </div>
+        </el-upload>
+        <el-button type="text" @click="testSiren(1)" class="hidden-button" style="color: #70a6d8; padding-bottom: 4px; padding-top: 16px">Remplissage automatique via le SIREN <i class="fas fa-level-down-alt" style="vertical-align: -1px"></i></el-button><br class="hidden-button" />
+        <field v-model="data.companyName" class="bold" placeholder="Votre nom / société" :prevent-new-line="true"></field><br />
+        <field v-model="data.companyAddress" placeholder="Adresse"></field><br />
+        <field v-model="data.companyPostcode" placeholder="Code postal" :prevent-new-line="true"></field>
+        <field v-model="data.companyCity" placeholder="Ville" :prevent-new-line="true"></field>
+        <span v-for="(info, index) in data.companyInformations" :key="info.id">
+            <br /><field v-model="info.name" class="bold" placeholder="Information" :prevent-new-line="true"></field> :
+            <field v-model="info.value" :placeholder="info.placeholder || 'Contenu'" :prevent-new-line="true"></field>
+            <button @click="removeCompanyInformation(index)" class="fas fa-minus-circle h4"></button>
+        </span>
+        <br /><button @click="addCompanyInformation" class="fas fa-plus-circle h4"></button>
+    </div>
+
+    <div class="right-align">
+        <el-button type="text" @click="testSiren(2)" class="hidden-button" style="color: #70a6d8; padding-bottom: 4px">Remplissage automatique via le SIREN <i class="fas fa-level-down-alt" style="vertical-align: -1px"></i></el-button><br class="hidden-button" />
+        <field v-model="data.clientName" class="bold" placeholder="Nom client" :prevent-new-line="true"></field><br />
+        <field v-model="data.clientAddress" placeholder="Adresse"></field><br />
+        <field v-model="data.clientPostcode" placeholder="Code postal" :prevent-new-line="true"></field>
+        <field v-model="data.clientCity" placeholder="Ville" :prevent-new-line="true"></field>
+        <span v-for="(info, index) in data.clientInformations" :key="info.id">
+            <br /><field v-model="info.name" class="bold" placeholder="Information" :prevent-new-line="true"></field> : 
+            <field v-model="info.value" :placeholder="info.placeholder || 'Contenu'" :prevent-new-line="true"></field>
+            <button @click="removeClientInformation(index)" class="fas fa-minus-circle h4"></button>
+        </span><br />
+        <button @click="addClientInformation" class="fas fa-plus-circle h4"></button>
+    </div>
+
+    <div class="relative mb3">
+        <table class="quote-table-left-header width-5 medium mb0">
+            <tr v-for="(header, index) in data.headers" :key="header.id">
+                <td :style="style"><field v-model="header.name" placeholder="En-tête" :prevent-new-line="true"></field></td>
+                <td class="relative">
+                    <div class="absolute top-0 full-height flex-center" style="right: -8px;"><button @click="removeHeader(index)" class="fas fa-minus-circle h4"></button></div>
+                    <field v-model="header.value" placeholder="Contenu" :prevent-new-line="true"></field>
+                </td>
+            </tr>
+        </table>
+        <div class="absolute flex-center width-5" style="bottom: -12px;"><button @click="addHeader" class="fas fa-plus-circle h2"></button></div>
+    </div>
+
+    <div class="relative mb3 overflow-mobile">
+        <table class="center medium mb0">
+            <tr>
+                <th :style="style">Description</th>
+                <th v-if="data.enableQuantityColumn" :style="style">Quantité</th>
+                <th v-if="data.enableQuantityColumn && data.enableUnitColumn" :style="style">Unité</th>
+                <th v-if="data.enableQuantityColumn" :style="style">Prix unitaire T.T.C</th>
+                
+                <th :style="style">Prix total T.T.C</th>
+                
+            </tr>
+            <tr v-for="(line, index) in data.lines" :key="line.id">
+                <td class="left-align">
+                    <field v-model="line.title" placeholder="TITRE PRESTATION"></field><br />
+                    <field v-model="line.description" placeholder="Description prestation" class="normal color-text"></field>
+                </td>
+                <td v-if="data.enableQuantityColumn"><field v-model="line.quantity" :prevent-new-line="true"></field></td>
+                <td v-if="data.enableQuantityColumn && data.enableUnitColumn"><field v-model="line.unit" placeholder="----" :prevent-new-line="true"></field></td>
+                <td class="relative">
+                    <field v-model="line.price" placeholder="0,00" :force-price="true" :prevent-new-line="true"></field> ${data.currency}
+                    <div v-if="!data.enableQuantityColumn && (!data.multiVAT || !data.enableVAT)" class="absolute top-0 full-height flex-center" style="right: -8px;"><button @click="removeLine(index)" class="fas fa-minus-circle h4"></button></div>
+                </td>
+                
+                <td v-if="data.enableQuantityColumn" class="relative">
+                    ${toCurrency(line.quantity * toNumber(line.price || 0))}
+                    <div class="absolute top-0 full-height flex-center" style="right: -8px;"><button @click="removeLine(index)" class="fas fa-minus-circle h4"></button></div>
+                </td>
+            </tr>
+        </table>
+        <div class="absolute flex-center full-width" style="bottom: -12px;"><button @click="addLine" class="fas fa-plus-circle h2"></button></div>
+    </div>
+
+    <div class="row justify-between items-end">
+        <field v-model="data.informations" placeholder="Informations complémentaires (IBAN, BIC...)" class="col col-5"></field>
+
+        <table class="quote-table-left-header self-end mb0 col col-6">
+            <tr>
+                <td :style="style" :class="{bold: !data.enableVAT}">Total T.T.C</td>
+                <td class="right-align">${toCurrency(data.lines.reduce((sum, cur) => cur.quantity * toNumber(cur.price || 0) + sum, 0))}</td>
+            </tr>
+        </table>
+    </div>
+
+    <hr />
+    <div class="center h5 color-text mt3">
+        <field v-model="data.footer" placeholder="Bas de page"></field>
+    </div>
+</div>
+<form target="_blank" :action="apiUrl + '/invoice/print'" ref="quoteForm" method="post">
+    <input type="hidden" :value="generatorType" name="type" />
+    <input type="hidden" :value="jsonData" name="data" />
+</form>
+<form target="iframeDownload" :action="apiUrl + '/invoice/download'" ref="quoteFormDl" method="post">
+    <input type="hidden" :value="generatorType" name="type" />
+    <input type="hidden" :value="jsonData" name="data" />
+</form>
+<iframe name="iframeDownload" src="" style="width:0; height:0; border:0; border:none"></iframe>            </div>
+            <div class="flex justify-around quote-buttons-container">
+                <button @click="download" class="cta button-print mt3" style="padding: 12px 24px 10px" :disabled="loading">Télécharger mon devis<i class="fas fa-download"></i></button>
+                <a href="https://www.coover.fr/responsabilite-civile-pro" target="_blank" rel="nofollow" :class="'cta center mt3 ' + (loading ? 'disabled' : '')" style="padding: 12px 24px 10px">
+                    <span>Protéger son activité et rassurer ses clients avec<br />une assurance professionnelle</span>
+                </a>
+                <button @click="print" class="cta button-print mt3" style="padding: 12px 24px 10px" :disabled="loading">Imprimer mon devis<i class="fas fa-print"></i></button>
+            </div>
+        </div>
+    </div>
+    
+</div>
+
+<script>
+  apiUrl = 'https://api.coover.fr';
+  generatorType = 'quote';
+  </script>
+</div>
+				</div>
+			</section>
+    
+    			<div class="article less_margin">
+		
+		<section class="article-content">
+									<div class="article-body">
+
+</div>		
+		    
+		<script async src="https://www.coover.fr/wp-content/themes/coover/build/script.js?ibjqe4q14q"></script>
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+			</body>
+</html>
+
